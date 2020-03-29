@@ -3,6 +3,7 @@ from selenium import webdriver
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.common.by import By
 import pandas as pd
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 import seaborn as sns
 sns.set()
@@ -62,13 +63,14 @@ print(data)
 
 print('========================================')
 print('Building chart')
+mpl.rcParams['font.size'] = 9.0
 fig1, chart = plt.subplots()
 
 cols = sns.color_palette()
-chart.pie(data['n'], autopct='%1.1f%%', shadow=False, startangle=90, colors=cols)
+chart.pie(data['n'], shadow=False, startangle=90, colors=cols)
 chart.axis('equal')
 
-plt.legend(data['Category'], loc=2)
+plt.legend(data['Category'], loc=2, bbox_to_anchor=(1,0.5))
 
 centre_circle = plt.Circle((0,0),0.75,fc='white')
 fig = plt.gcf()

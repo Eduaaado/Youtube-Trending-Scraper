@@ -4,6 +4,8 @@ from selenium.webdriver.support.ui import Select
 from selenium.webdriver.common.by import By
 import pandas as pd
 import matplotlib.pyplot as plt
+import seaborn as sns
+sns.set()
 
 driver = webdriver.Chrome(executable_path = 'tools/chromedriver')
 driver.get('https://www.youtube.com/feed/trending')
@@ -37,6 +39,7 @@ def percent(n, total):
     return round((n/total)*100, 1)
 
 categories = []
+
 for link in videos:
     print('========================================')
     print('Getting categories ({}%)'.format(percent(videos.index(link)+1, len(videos))))
@@ -55,15 +58,24 @@ data = data.groupby('Category')['n'].sum()
 data = data.to_frame()
 data.reset_index(level=0, inplace=True)
 data = data.sort_values(by='n', ascending=True)
-print(data)
+print(data) 
 
 print('========================================')
 print('Building chart')
 fig1, chart = plt.subplots()
-chart.pie(data['n'], labels=data['Category'], autopct='%1.1f%%', shadow=False, startangle=90)
+
+cols = sns.color_palette()
+chart.pie(data['n'], autopct='%1.1f%%', shadow=False, startangle=90, colors=cols)
 chart.axis('equal')
 
+plt.legend(data['Category'], loc=2)
+
+centre_circle = plt.Circle((0,0),0.75,fc='white')
+fig = plt.gcf()
+fig.gca().add_artist(centre_circle)
+
 plt.title('Youtube Trending Videos Categories')
+plt.tight_layout()
 print('~~~~~~~~~~~~~~~~~~~~')
 print('-~ Done! ~-')
 print('~~~~~~~~~~~~~~~~~~~~')

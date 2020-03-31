@@ -1,5 +1,6 @@
 # Youtube Trending Scraper
 This is a program that checks all videos on trendings and gets it's categories and returns a pie chart of it.
+<img src='example.png'>
 ## Setting up
 In order to run, you will need some libraries
 * Selenium

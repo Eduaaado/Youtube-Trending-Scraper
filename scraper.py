@@ -6,7 +6,13 @@ import pandas as pd
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import seaborn as sns
+import datetime
 sns.set()
+
+date = datetime.datetime.now()
+day = date.day
+month = date.month
+year = date.year
 
 driver = webdriver.Chrome(executable_path = 'tools/chromedriver')
 driver.get('https://www.youtube.com/feed/trending')
@@ -54,6 +60,7 @@ for link in videos:
 print('========================================')
 print('Making data frame')
 n = [1 for category in categories]
+total = sum(n)
 data = pd.DataFrame({"Category": categories, "n": n})
 data = data.groupby('Category')['n'].sum()
 data = data.to_frame()
@@ -66,11 +73,12 @@ print('Building chart')
 mpl.rcParams['font.size'] = 9.0
 fig1, chart = plt.subplots()
 
-cols = sns.color_palette()
+cols = sns.color_palette("cubehelix", 8)
 chart.pie(data['n'], shadow=False, startangle=90, colors=cols)
 chart.axis('equal')
 
-plt.legend(data['Category'], loc=2, bbox_to_anchor=(1,0.5))
+percents = [percent(n, total) for n in data['n']]
+plt.legend(labels=['%s, %1.1f %%' % (l, s) for l, s in zip(data['Category'], percents)], loc=2, bbox_to_anchor=(1,0.5))
 
 centre_circle = plt.Circle((0,0),0.75,fc='white')
 fig = plt.gcf()
@@ -82,3 +90,7 @@ print('~~~~~~~~~~~~~~~~~~~~')
 print('-~ Done! ~-')
 print('~~~~~~~~~~~~~~~~~~~~')
 plt.show()
+
+fname = 'yt-trending-{}-{}-{}.png'.format(day, month, year)
+print('Saving chart as {}'.format(fname))
+plt.savefig(fname, dpi=700)

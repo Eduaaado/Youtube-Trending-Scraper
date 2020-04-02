@@ -18,53 +18,45 @@ hour = date.hour
 minute = date.minute
 if len(str(minute)) == 1: minute = '0'+str(minute)
 
-driver = webdriver.Chrome(executable_path = 'tools/chromedriver') # Gets Chrome driver
-driver.get('https://www.youtube.com/feed/trending') # Go to Youtube Trending page
+# Function to find the category text
+def findCat():
+    showmore = driver.find_element_by_xpath('//*[@id="more"]/yt-formatted-string')
+    driver.execute_script("arguments[0].click();", showmore)
 
+    category = driver.find_element_by_xpath('//*[@id="content"]/yt-formatted-string/a')
+    return category.get_attribute('innerHTML')
 # Function to go to a video and find it's category
 def getCategory(link): 
-    print(link)
+    print('========================================')
+    print('Going to '+link)
     driver.get(link) # Go to video
     sleep(1) # Wait to load
-    # Function to find the category text
-    def getcat():
-        showmore = driver.find_element_by_xpath('//*[@id="more"]/yt-formatted-string')
-        driver.execute_script("arguments[0].click();", showmore)
 
-        category = driver.find_element_by_xpath('//*[@id="content"]/yt-formatted-string/a')
-        return category.get_attribute('innerHTML')
-
+    c = None
     try: # Tries to get it
-        c = getcat()
+        c = findCat()
     except: # If it fails, wait some seconds and try again
-        sleep(3)
-        c = getcat()
+        try:
+            sleep(3)
+            c = findCat()
+        except: 
+            pass
     
+    print('Getting categories ({}%)'.format(percent(videos.index(link)+1, len(videos))))
     return c
-
-videos = [] # Video's links array
-for thumb in driver.find_elements_by_id('thumbnail'): # Gets all thumbs (they contain the link)
-    videos.append(thumb.get_attribute('href')) # Insert href to array
-    print('Getting video links ({})'.format(len(videos))) # Print number of videos
-print('All links listed!')
 
 # Simple function to get percentage
 def percent(n, total):
     return round((n/total)*100, 1)
 
-categories = []
+driver = webdriver.Chrome(executable_path = 'tools/chromedriver') # Gets Chrome driver
+driver.get('https://www.youtube.com/feed/trending') # Go to Youtube Trending page
 
-videos = videos[:3]
-# Runs the code bellow for each link
-for link in videos:
-    print('========================================')
-    try: # Try to get category
-        c = getCategory(link) 
-        print(c)
-        categories.append(c)
-    except: # If it fails, just move on
-        pass
-    print('Getting categories ({}%)'.format(percent(videos.index(link)+1, len(videos))))
+print('Getting links')
+videos = [thumb.get_attribute('href') for thumb in driver.find_elements_by_id('thumbnail') if thumb.get_attribute('href') != None]
+print('All links listed!')
+
+categories = [getCategory(link) for link in videos if not None]
 
 driver.close()
 
@@ -105,7 +97,7 @@ fig = plt.gcf()
 fig.gca().add_artist(centre_circle)
 
 plt.suptitle('Youtube Trending Categories ({}:{} on {}/{}/{})'.format(hour, minute, day, month, year))
-#plt.tight_layout()
+
 print('~~~~~~~~~~~~~~~~~~~~')
 print('-~ Done! ~-')
 print('~~~~~~~~~~~~~~~~~~~~')

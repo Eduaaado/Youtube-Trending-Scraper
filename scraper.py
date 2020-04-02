@@ -1,4 +1,5 @@
 from time import sleep
+from time import perf_counter
 from selenium import webdriver
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.common.by import By
@@ -42,19 +43,21 @@ def getCategory(link):
         except: 
             pass
     
-    print('Getting categories ({}%)'.format(percent(videos.index(link)+1, len(videos))))
+    print(f'Getting categories ({percent(videos.index(link)+1, len(videos))}%)')
     return c
 
 # Simple function to get percentage
 def percent(n, total):
     return round((n/total)*100, 1)
 
+tic = perf_counter()
+
 driver = webdriver.Chrome(executable_path = 'tools/chromedriver') # Gets Chrome driver
 driver.get('https://www.youtube.com/feed/trending') # Go to Youtube Trending page
 
 print('Getting links')
 videos = [thumb.get_attribute('href') for thumb in driver.find_elements_by_id('thumbnail') if thumb.get_attribute('href') != None]
-print('All links listed!')
+print(f'All links listed! ({len(videos)})')
 
 categories = [getCategory(link) for link in videos if not None]
 
@@ -96,17 +99,25 @@ centre_circle = plt.Circle((0,0),0.75,fc='white')
 fig = plt.gcf()
 fig.gca().add_artist(centre_circle)
 
-plt.suptitle('Youtube Trending Categories ({}:{} on {}/{}/{})'.format(hour, minute, day, month, year))
+plt.suptitle(f'Youtube Trending Categories ({hour}:{minute} on {day}/{month}/{year})')
+toc = perf_counter()
 
+totalsecs = toc - tic
+minutes = int(totalsecs//60)
+fmin = totalsecs/60
+remain = float(str(fmin-int(fmin))[1:])
+seconds = int(60*remain)
+time = f'{minutes} minutes'
+if seconds != 0: time = time+f' and {seconds} seconds'
 print('~~~~~~~~~~~~~~~~~~~~')
-print('-~ Done! ~-')
+print(f'-~ Done in {time}. ~-')
 print('~~~~~~~~~~~~~~~~~~~~')
 
 
 # Save figure file
-fname = 'yt-trending-{}-{}-{}.png'.format(day, month, year)
-print('Saving chart as {}'.format(fname))
-#fig = plt.gcf()
+fname = f'yt-trending-{day}-{month}-{year}.png'
+print(f'Saving chart as {fname}')
+
 plt.draw()
 plt.savefig(fname, dpi=700)
 plt.show()

@@ -54,6 +54,7 @@ def percent(n, total):
 
 categories = []
 
+videos = videos[:3]
 # Runs the code bellow for each link
 for link in videos:
     print('========================================')
@@ -97,7 +98,7 @@ chart.axis('equal')
 
 # Sets legend
 percents = [percent(n, total) for n in data['n']]
-plt.legend(labels=['%s, %1.1f %%' % (l, s) for l, s in zip(data['Category'], percents)], loc=2, bbox_to_anchor=(.95,.85))
+plt.legend(labels=['%s, %1.1f %%' % (l, s) for l, s in zip(data['Category'], percents)], frameon=False, loc=2, bbox_to_anchor=(.94,.85))
 
 centre_circle = plt.Circle((0,0),0.75,fc='white')
 fig = plt.gcf()

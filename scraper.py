@@ -99,7 +99,7 @@ centre_circle = plt.Circle((0,0),0.75,fc='white')
 fig = plt.gcf()
 fig.gca().add_artist(centre_circle)
 
-plt.suptitle(f'Youtube Trending Categories ({hour}:{minute} on {day}/{month}/{year})')
+plt.suptitle(f'\nYoutube Trending Categories\n{hour}:{minute} on {day}/{month}/{year}')
 toc = perf_counter()
 
 totalsecs = toc - tic

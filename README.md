@@ -3,7 +3,9 @@ This is a program that checks all videos on trendings and gets it's categories a
 <img src='example.png'>
 ## What have I learned with the project?
 ### Web driver
-Using `selenium` package, I was able to perform web scrap with a Chrome web driver (you can find it on `tools` file)
+Using `selenium` package, I was able to perform web scrap on [Youtube Trendings](https://www.youtube.com/feed/trending) with a Chrome web driver (you can find it on `tools` file)
+### Pie chart
+learned to create highly customized pie charts in `matplotlib` with the help of `seaborn`
 
 ## Setting up
 In order to run, you will need some libraries

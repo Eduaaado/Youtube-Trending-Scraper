@@ -19,4 +19,4 @@ In your `cmd`, you can use `pip install` to get the packages
 ```
 > pip install selenium pandas matplotlib seaborn datetime
 ```
-Now you can run `scraper.py` and after about 8 minutes, you will have your chart saved on scraper's repository
+Now you should be able to run `scraper.py` properly. It takes about 8 minutes to be done and return a chart saved on scraper's repository
